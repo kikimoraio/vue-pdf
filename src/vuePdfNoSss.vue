@@ -6,13 +6,10 @@
 	if ( process.env.VUE_ENV !== 'server' ) {
 
 		var pdfjsWrapper = require('./pdfjsWrapper.js').default;
-		var PDFJS = require('pdfjs-dist/es5/build/pdf.js');
+		var PDFJS = require('pdfjs-dist');
+		var pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 
-		if ( typeof window !== 'undefined' && 'Worker' in window && navigator.appVersion.indexOf('MSIE 10') === -1 ) {
-
-			var PdfjsWorker = require('worker-loader!pdfjs-dist/es5/build/pdf.worker.js');
-			PDFJS.GlobalWorkerOptions.workerPort = new PdfjsWorker();
-		}
+		PDFJS.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 		var component = componentFactory(pdfjsWrapper(PDFJS));
 	} else {
